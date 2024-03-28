@@ -1,0 +1,104 @@
+#particles canvas {
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+.signup-container {
+    /* Glassmorphism effect */
+    background: rgba(255, 255, 255, 0.4); /* Semi-transparent white background */
+    backdrop-filter: blur(15px); /* Blur the background slightly */
+    -webkit-border-radius: 0px 40px 0px 40px;
+    -moz-border-radius: 0px 40px 0px 40px;
+    border-radius: 0px 40px 0px 40px;
+    border: #333332 2px solid ;
+    box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.25); /* Shadow for depth */
+    padding: 30px;
+    width: 350px; /* Adjust width as needed */
+    margin: 30px auto; /* Center the box */
+    text-align: center;
+  }
+  /* Sign-up header */
+  .signup-header span {
+    position:relative;
+    display:inline-flex;
+    height: 40px;
+    margin-bottom: 10px;
+    width: 200px;
+    background: #d71616;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 10px 0 10px;
+    font-family: Consolas, Courier New, monospace;
+    border: solid #4d5a72 2px;
+    font-size: 20px;
+    color: rgb(255, 255, 255);      
+  }
+  .signup-header h2 {
+    font-size: 15px;
+    font-family: Consolas, Courier New, monospace;
+    margin-bottom: 10px;
+  }
+  .line {
+    border-bottom: 1px solid black; /* Adjust color and thickness as needed */
+    margin-bottom: 30px;
+    width:auto;
+  }
+  /* Form elements within the box */
+  .signup-form {
+    /* Adjust font size and colors for better readability on the glass background */
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .signup-form input {
+    background: transparent; /* Keep inputs transparent */
+    border: none; 
+    border-bottom: 3px solid #ccc; /* Indicate focus with a bottom border */
+    margin-bottom: 1px;
+    width: 100%;
+    color: #d71616;
+  }
+  
+  .signup-form button {
+    height: 40px;
+    margin-top: 20px;
+    width: 100px;
+    background: #333;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-family: Consolas, Courier New, monospace;
+    border: solid #4d5a72 1px;
+    font-size: 16px;
+    color: rgb(165, 158, 158);
+    -webkit-transition: 500ms;
+    transition: 500ms;
+    border-radius: 70px;
+    background: linear-gradient(145deg, #2e2d2d, #212121);
+    -webkit-box-shadow: -1px -5px 15px #41465b, 5px 5px 15px #41465b,
+      inset 5px 5px 10px #212121, inset -5px -5px 10px #212121;
+    box-shadow: -1px -5px 15px #41465b, 5px 5px 15px #41465b,
+      inset 5px 5px 10px #212121, inset -5px -5px 10px #212121;
+  }
+  
+  .signup-form button:hover {
+    -webkit-box-shadow: 1px 1px 13px #20232e, -1px -1px 13px #545b78;
+    box-shadow: 1px 1px 13px #20232e, -1px -1px 13px #545b78;
+    color: #d6d6d6;
+    -webkit-transition: 500ms;
+    transition: 500ms;
+  }
+  
+  .signup-form button:active {
+    -webkit-box-shadow: 1px 1px 13px #20232e, -1px -1px 33px #545b78;
+    box-shadow: 1px 1px 13px #20232e, -1px -1px 33px #545b78;
+    color: #d6d6d6;
+    -webkit-transition: 100ms;
+    transition: 100ms;
+  }

@@ -8,7 +8,7 @@ export default {
     extend: {
       fontFamily: {
         'authappfont': ['lobster'],
-        'typofont': ['narrow']
+        'mono': [' Consolas, Courier New, monospace'],
       }
     },
   },
