@@ -5,6 +5,7 @@ import { useState } from 'react';
 function SignUp() {
   const [ formData, setFormData ] = useState({})
   const [error, setError] = useState(false)
+  const [emailInvalid, setEmailInvalid] = useState(false);
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const handleChange = (e)=> {
@@ -13,6 +14,32 @@ function SignUp() {
   const handleSubmit = async(e)=> {
     e.preventDefault();
     try {
+      if (!formData.username && !formData.email && !formData.password) {
+        setError(true);
+        setLoading(false);
+        console.log('# Please enter username, email, and password!');
+        return;
+      }
+      if (!formData.email && !formData.password) {
+        setError(true);
+        setLoading(false);
+        console.log('# Please enter email and password!');
+        return;
+      }
+      if (!formData.password) {
+        setError(true);
+        setLoading(false);
+        console.log('# Please enter password!');
+        return;
+      }
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(formData.email)) {
+        setError(true);
+        setEmailInvalid(true);
+        setLoading(false);
+        console.log('# Invalid email format!');
+        return;
+      }
       setLoading(true);
       setError(false);
      const res = await fetch('/api/auth/signup', {
@@ -62,7 +89,7 @@ function SignUp() {
           </div>
           <div className="mt-8 relative">
            <input
-             type="text"
+             type="email"
              name="email"
              id="email"
              className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600  rounded-lg"
@@ -74,7 +101,7 @@ function SignUp() {
           </div>
           <div className="mt-8 relative">
            <input
-             type="text"
+             type="password"
              name="Password"
              id="password"
              className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600 p-3 rounded-lg"
@@ -94,7 +121,14 @@ function SignUp() {
             <span className='text-blue-600 '>Login</span>
             </Link>
           </div>
-          <p className='text-red-700 mt-5'>{error && 'Somthing went wrong!'}</p>
+          <p className='text-red-700 mt-5'>{error && (
+           
+           !formData.username && !formData.email && !formData.password ? 'Please enter username, email, and password!' :
+           formData.username && formData.email && !formData.password ? 'Please enter password!' :
+           !formData.username && formData.email ? 'Please enter username!' :
+           formData.username && !formData.email ? 'Please enter email!' :
+           emailInvalid ? 'Invalid email format!' : !emailInvalid ? ' Thank You !' : 'An unknown error occurred'
+          )}</p>
         </div>
       </div>
     </div>
