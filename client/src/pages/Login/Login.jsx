@@ -2,19 +2,21 @@ import {Link, useNavigate} from 'react-router-dom';
 import Particlescomp from '../../components/Particles';
 import './Login.css';
 import { useState } from 'react';
+import { loginStart,loginSuccess,loginFailure } from '../../Redux/user/userSlice';
+import {useDispatch, useSelector } from 'react-redux';
+
 function Login() {
   const [ formData, setFormData ] = useState({})
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const  {loading, error} = useSelector((state) => state.user);
   const navigate = useNavigate()
+  const dispatch = useDispatch();
   const handleChange = (e)=> {
     setFormData({...formData, [e.target.id]: e.target.value});
   }
   const handleSubmit = async(e)=> {
     e.preventDefault();
     try {
-      setLoading(true);
-      setError(false);
+      dispatch(loginStart());
      const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: {
@@ -23,16 +25,16 @@ function Login() {
       body: JSON.stringify(formData),
      } )
      const data = await res.json();
-     setLoading(false)
+     
      if (data.success === false) {
-      setError(true)
+      dispatch(loginFailure(data));
       return;
      }
+     dispatch(loginSuccess(data));
      navigate('/');
     } 
    catch(error){
-    setError(true)
-    setLoading(false)
+   dispatch(loginFailure(error));
    }
   }
   return (
@@ -49,7 +51,7 @@ function Login() {
          <form onSubmit={handleSubmit} className="login-form">
           <div className=" mt-10 relative">
            <input
-             type="text"
+             type="email"
              name="email"
              id="email"
              className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600  rounded-lg"
@@ -61,7 +63,7 @@ function Login() {
           </div>
           <div className="mt-8 relative">
            <input
-             type="text"
+             type="password"
              name="Password"
              id="password"
              className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600 p-3 rounded-lg"
@@ -71,7 +73,7 @@ function Login() {
            />
            <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
           </div>
-           <button disabled={loading} type="submit">
+           <button disabled={loading} >
             {loading ? "Loading..." : "Login" }
             </button>
           </form>
@@ -81,7 +83,9 @@ function Login() {
             <span className='text-blue-600 '>Sign Up</span>
             </Link>
           </div>
-          <p className='text-red-700 mt-5'>{error && 'Somthing went wrong!'}</p>
+          <p className='text-red-700 mt-5'>
+            {error ? error.message || 'Somthing went wrong!' : '' }
+          </p>
         </div>
       </div>
     </div>
