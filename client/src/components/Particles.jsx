@@ -6,7 +6,6 @@ import { loadSlim } from "@tsparticles/slim"; // if you are going to use `loadSl
 // import { loadBasic } from "@tsparticles/basic"; // if you are going to use `loadBasic`, install the "@tsparticles/basic" package too.
 
 
-
 const Particlescomp = (props) => {
 
   const [init, setInit] = useState(false);

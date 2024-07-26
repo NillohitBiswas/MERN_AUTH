@@ -4,7 +4,7 @@ import './Login.css';
 import { useState } from 'react';
 import { loginStart,loginSuccess,loginFailure } from '../../Redux/user/userSlice';
 import {useDispatch, useSelector } from 'react-redux';
-
+import OAuth  from '../../components/OAuth';
 function Login() {
   const [ formData, setFormData ] = useState({})
   const  {loading, error} = useSelector((state) => state.user);
@@ -54,14 +54,14 @@ function Login() {
              type="email"
              name="email"
              id="email"
-             className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600  rounded-lg"
+             className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600 p-3 rounded-lg"
              placeholder="john@doe.com" 
              onChange={handleChange}
              autoComplete='off'
            />
            <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
           </div>
-          <div className="mt-8 relative">
+          <div className="mt-4 relative">
            <input
              type="password"
              name="Password"
@@ -73,16 +73,23 @@ function Login() {
            />
            <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
           </div>
+
            <button disabled={loading} >
-            {loading ? "Loading..." : "Login" }
-            </button>
+             {loading ? "Loading..." : "Login" }
+           </button>
+           <div className="line mt-4 mb-1 ">
+           </div>
+           <p className='font-mono text-sm flex justify-center gap-2'>Or You Can ...</p>
+          <OAuth/>
           </form>
+
           <div className='mt-5 font-mono text-xs flex justify-center gap-2'>
             <p>Do not have an Account?</p>
             <Link to='/SignUp'>
             <span className='text-blue-600 '>Sign Up</span>
             </Link>
           </div>
+          
           <p className='text-red-700 mt-5'>
             {error ? error.message || 'Somthing went wrong!' : '' }
           </p>

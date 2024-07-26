@@ -2,6 +2,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import Particlescomp from '../../components/Particles';
 import './SignUp.css';
 import { useState } from 'react';
+import OAuth from '../../components/OAuth';
 function SignUp() {
   const [ formData, setFormData ] = useState({})
   const [error, setError] = useState(false)
@@ -75,7 +76,7 @@ function SignUp() {
          </div>
          <div className="line"></div>
          <form onSubmit={handleSubmit} className="signup-form">
-          <div className=" mt-10 relative">
+          <div className=" mt-6 relative">
            <input
              type="text"
              name="username"
@@ -87,19 +88,19 @@ function SignUp() {
            />
            <label htmlFor="username" className="absolute left-0 -top-3.5 text-gray-800 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Username</label>
           </div>
-          <div className="mt-8 relative">
+          <div className="mt-4 relative">
            <input
              type="email"
              name="email"
              id="email"
-             className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600  rounded-lg"
+             className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600 p-3 rounded-lg"
              placeholder="john@doe.com" 
              onChange={handleChange}
              autoComplete='off'
            />
            <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
           </div>
-          <div className="mt-8 relative">
+          <div className="mt-4 relative">
            <input
              type="password"
              name="Password"
@@ -111,10 +112,16 @@ function SignUp() {
            />
            <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
           </div>
+
            <button disabled={loading} type="submit">
             {loading ? "Loading..." : "Sign Up" }
-            </button>
+           </button>
+           <div className="line mt-4 mb-1 ">
+           </div>
+           <p className='font-mono text-sm flex justify-center gap-2'>Or You Can ...</p>
+           <OAuth />
           </form>
+
           <div className='mt-5 font-mono text-xs flex justify-center gap-2'>
             <p>Already have an Account?</p>
             <Link to='/Login'>
