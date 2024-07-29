@@ -1,6 +1,8 @@
 import {Link} from 'react-router-dom'
 import './Header.css';
+import { useSelector } from 'react-redux';
 export default function Header() {
+  const { currentUser } = useSelector( (state) => state.user)
   return (
     <div className="background">
       <div className='flex justify-between  items-center max-w-full mx-auto p-2 text-black'>
@@ -14,10 +16,17 @@ export default function Header() {
          <Link to='/about'>
          <li>About</li>
          </Link>
-         </ul>
+        </ul>
          <Link to='/LogIn'>
-         <button className="button">Login</button>
+         
+            {currentUser ? (
+              <img src={currentUser.profilePicture} alt='profile' className='h-7 w-7 rounded-full object-cover' />
+            ) : (
+           <li>LogIn</li>)
+          }
+         
          </Link>
+        
       </div>
     </div>
   )
