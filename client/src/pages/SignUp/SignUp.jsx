@@ -59,7 +59,7 @@ function SignUp() {
      }
      navigate('/login');
     } 
-   catch(error){
+   catch(error){ 
     setError(true)
     setLoading(false)
    }
@@ -86,7 +86,7 @@ function SignUp() {
              onChange={handleChange} 
              autoComplete='given-name'
            />
-           <label htmlFor="username" className="absolute left-0 -top-3.5 text-gray-800 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Username</label>
+           <label htmlFor="username" className="absolute left-2 -top-4 text-gray-800 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Username</label>
           </div>
           <div className="mt-4 relative">
            <input
@@ -98,7 +98,7 @@ function SignUp() {
              onChange={handleChange}
              autoComplete='off'
            />
-           <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
+           <label htmlFor="email" className="absolute left-2 -top-4 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
           </div>
           <div className="mt-4 relative">
            <input
@@ -110,7 +110,7 @@ function SignUp() {
              onChange={handleChange}
              autoComplete='off'
            />
-           <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
+           <label htmlFor="password" className="absolute left-2 -top-4 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
           </div>
 
            <button disabled={loading} type="submit">
@@ -128,7 +128,7 @@ function SignUp() {
             <span className='text-blue-600 '>Login</span>
             </Link>
           </div>
-          <p className='text-red-700 mt-5'>{error && (
+          <p className='text-red-700 mt-4 text-xs font-mono'>{error && (
            
            !formData.username && !formData.email && !formData.password ? 'Please enter username, email, and password!' :
            formData.username && formData.email && !formData.password ? 'Please enter password!' :
