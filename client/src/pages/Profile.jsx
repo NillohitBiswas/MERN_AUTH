@@ -16,7 +16,8 @@ import {
   deleteUserSuccess,
   deleteUserFailure,
   logout,
-} from '../redux/user/userSlice';
+} from '../Redux/user/userSlice.js';
+import Particlescomp from '../components/Particles';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ export default function Profile() {
         setImagePercent(Math.round(progress));
       },
       (error) => {
+        console.error('upload failed:', error);
         setImageError(true);
       },
       () => {
@@ -58,6 +60,7 @@ export default function Profile() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,7 +104,7 @@ export default function Profile() {
 
   const handlelogout = async () => {
     try {
-      await fetch('/api/auth/signout');
+      await fetch('/api/auth/logout');
       dispatch(logout())
     } catch (error) {
       console.log(error);
