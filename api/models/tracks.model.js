@@ -13,6 +13,10 @@ const trackSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  filePath: { 
+    type: String, 
+    required: true,
+  },
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
