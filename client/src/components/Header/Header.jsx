@@ -16,6 +16,9 @@ export default function Header() {
          <Link to='/about'>
          <li>About</li>
          </Link>
+         <Link to='/tracks'>
+         <li>Tracks</li>
+         </Link>
         
          <Link to='/Profile'>
             {currentUser ? (
