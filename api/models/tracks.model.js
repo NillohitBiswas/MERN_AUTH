@@ -5,20 +5,20 @@ const trackSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  url: {
+  artist: {
     type: String,
     required: true,
   },
-  user: {
+  fileUrl: {
+    type: String,
+    required: true,
+  },
+  uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-  },
-  isDefault: {
-    type: Boolean,
-    default: false,
+    required: true,
   },
 }, { timestamps: true });
 
-const Tracks = mongoose.model("Tracks", trackSchema);
-
-export default Tracks;
+const Track = mongoose.model('Track', trackSchema);
+export default Track;

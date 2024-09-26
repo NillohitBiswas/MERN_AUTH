@@ -1,13 +1,11 @@
 import express from 'express';
 import { verifyToken } from '../utils/verifyUser.js';
-import { getDefaultTracks, getUserTracks, addTrack } from '../controllers/tracks.controller.js';
-import multer from 'multer';
+import { uploadTrack, getUserTracks, getAllTracks } from '../controllers/tracks.controller.js';
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
 
-router.get('/default', getDefaultTracks);
+router.post('/upload', verifyToken, uploadTrack);
 router.get('/user', verifyToken, getUserTracks);
-router.post('/add', verifyToken, upload.single('track'), addTrack);
+router.get('/all', getAllTracks);
 
 export default router;
