@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/upload', verifyToken, uploadTrack);
 router.get('/user', verifyToken, getUserTracks);
 router.get('/all', getAllTracks);
-router.get('/delete/:id', verifyToken, deleteTrack);
+router.delete('/delete/:id', verifyToken, deleteTrack);
 
 
 export default router;

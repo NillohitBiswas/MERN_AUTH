@@ -56,27 +56,36 @@ export const getAllTracks = async (req, res, next) => {
 
 export const deleteTrack = async (req, res) => {
   const { id } = req.params;
-  const userId = req.user.id; //  middleware that adds the user to the request
+  const userId = req.user.id;
 
   try {
+    console.log(`Attempting to delete track with id: ${id}`);
+
     // Find the track
     const track = await Track.findById(id);
 
     if (!track) {
+      console.log(`Track with id ${id} not found`);
       return res.status(404).json({ message: 'Track not found' });
     }
 
+    console.log(`Track found: ${JSON.stringify(track)}`);
+
     // Check if the user is the owner of the track
     if (track.uploadedBy.toString() !== userId) {
+      console.log(`User ${userId} does not have permission to delete track ${id}`);
       return res.status(403).json({ message: 'You do not have permission to delete this track' });
     }
 
     // Delete the track from the database
-    await Track.findByIdAndDelete(id);
+    const deletedTrack = await Track.findByIdAndDelete(id);
+    console.log(`Deleted track: ${JSON.stringify(deletedTrack)}`);
 
-    await User.findByIdAndUpdate(userId, {
+    // Remove the track from the user's tracks array
+    const updatedUser = await User.findByIdAndUpdate(userId, {
       $pull: { tracks: id }
-    });
+    }, { new: true });
+    console.log(`Updated user: ${JSON.stringify(updatedUser)}`);
 
     res.status(200).json({ message: 'Track deleted successfully' });
   } catch (error) {
