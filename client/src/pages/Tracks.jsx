@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { ref, getStorage, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage"
-import { app } from '../Firebase'
+import { app } from '../Firebase.js'
 import { CirclePlay, CirclePause, Trash, CloudUpload, User, Music, FileMusic } from 'lucide-react'
 import {
   fetchTracksStart,
@@ -18,6 +18,10 @@ import {
   deleteTrackFailure,
 } from '../Redux/user/tracksSlice'
 
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { SearchBar } from '../components/Searchbar.jsx'
+
+
 export default function Tracks() {
   const [activeTab, setActiveTab] = useState('all')
   const [file, setFile] = useState(null)
@@ -31,6 +35,13 @@ export default function Tracks() {
   const [duration, setDuration] = useState(0)
   const [audioReady, setAudioReady] = useState(false)
   const audioRef = useRef(null)
+
+  const [allTracksPage, setAllTracksPage] = useState(1);
+  const [userTracksPage, setUserTracksPage] = useState(1);
+  const [hasMoreAllTracks, setHasMoreAllTracks] = useState(true);
+  const [hasMoreUserTracks, setHasMoreUserTracks] = useState(true);
+
+  const [filteredTracks, setFilteredTracks] = useState([])
 
   const dispatch = useDispatch()
   const { currentUser } = useSelector((state) => state.user)
@@ -78,31 +89,56 @@ export default function Tracks() {
 
 
   const fetchAllTracks = async () => {
-    dispatch(fetchTracksStart())
+    dispatch(fetchTracksStart());
     try {
-      const res = await fetch('/api/tracks/all')
-      const data = await res.json()
-      dispatch(fetchAllTracksSuccess(data))
+      const res = await fetch(`/api/tracks/all?page=${allTracksPage}&limit=2`);
+      const data = await res.json();
+      dispatch(fetchAllTracksSuccess(allTracksPage === 1 ? data : [...allTracks, ...data]));
+      setHasMoreAllTracks(data.length = 1);
+      setAllTracksPage(prevPage => prevPage + 1);
     } catch (error) {
-      dispatch(fetchTracksFailure(error instanceof Error ? error.message : 'An unknown error occurred'))
+      dispatch(fetchTracksFailure(error instanceof Error ? error.message : 'An unknown error occurred'));
     }
-  }
+  };
 
   const fetchUserTracks = async () => {
-    if (!currentUser) return
-    dispatch(fetchTracksStart())
+    if (!currentUser) return;
+    dispatch(fetchTracksStart());
     try {
-      const res = await fetch('/api/tracks/user', {
+      const res = await fetch(`/api/tracks/user?page=${userTracksPage}&limit=2`, {
         headers: {
           'Authorization': `Bearer ${currentUser.token}`
         }
-      })
-      const data = await res.json()
-      dispatch(fetchUserTracksSuccess(data))
+      });
+      const data = await res.json();
+      dispatch(fetchUserTracksSuccess(userTracksPage === 1 ? data : [...userTracks, ...data]));
+      setHasMoreUserTracks(data.length = 1);
+      setUserTracksPage(prevPage => prevPage + 1);
     } catch (error) {
-      dispatch(fetchTracksFailure(error instanceof Error ? error.message : 'An unknown error occurred'))
+      dispatch(fetchTracksFailure(error instanceof Error ? error.message : 'An unknown error occurred'));
     }
-  }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'all') {
+      setAllTracksPage(1);
+      setHasMoreAllTracks(false);
+      fetchAllTracks();
+    } else if (activeTab === 'user') {
+      setUserTracksPage(1);
+      setHasMoreUserTracks(false);
+      fetchUserTracks();
+    }
+  }, [activeTab, currentUser]);
+
+  const loadMore = () => {
+    if (activeTab === 'all') {
+      fetchAllTracks();
+    } else if (activeTab === 'user') {
+      fetchUserTracks();
+    }
+  };
+
 
   const handleFileChange = (e) => {
     if (e.target.files) {
@@ -267,7 +303,30 @@ export default function Tracks() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
+  const handleSearch = (searchTerm) => {
+    const filtered = allTracks.filter(
+      (track) =>
+        track.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        track.artist.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    setFilteredTracks(filtered)
+  }
+
   const TrackList = ({ tracks, showDelete = false }) => (
+    <div className="h-[200px] overflow-y-auto" id="trackListContainer">
+    <InfiniteScroll
+    dataLength={tracks.length}
+    next={loadMore}
+    hasMore={activeTab === 'all' ? hasMoreAllTracks : hasMoreUserTracks}
+    loader={<h4>Loading...</h4>}
+    scrollableTarget="trackListContainer"
+    threshold={0.5}
+    endMessage={
+      <p style={{ textAlign: 'center' }}>
+        <b>Yay! You have seen it all</b>
+      </p>
+    }
+   >
     <ul className="space-y-4">
       {tracks.map((track) => (
         <li
@@ -300,14 +359,18 @@ export default function Tracks() {
             )}
           </div>
         </li>
-      ))}
-    </ul>
+       ))}
+     </ul>
+     </InfiniteScroll>
+     </div>
   )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-extrabold mb-8 text-center text-indigo-900">Your Music Hub</h1>
+         
+        <SearchBar onSearch={handleSearch} />
 
         <div className="bg-white shadow-2xl rounded-2xl overflow-hidden mb-8">
           <div className="flex border-b">
@@ -331,10 +394,12 @@ export default function Tracks() {
             {activeTab === 'all' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 text-indigo-900">All Tracks</h2>
-                {allTracks.length > 0 ? (
-                  <TrackList tracks={allTracks} />
+                {filteredTracks.length > 0 ? (
+                 <TrackList tracks={filteredTracks} />
+                ) : allTracks.length > 0 ? (
+                 <TrackList tracks={allTracks} />
                 ) : (
-                  <p className="text-gray-600">No tracks have been uploaded yet.</p>
+                 <p className="text-gray-600">No tracks have been uploaded yet.</p>
                 )}
               </div>
             )}
