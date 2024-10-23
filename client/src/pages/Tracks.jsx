@@ -20,6 +20,7 @@ import {
 
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { SearchBar } from '../components/Searchbar.jsx'
+import CircularSlider from '../components/CircularSlider.jsx'
 
 
 export default function Tracks() {
@@ -289,8 +290,7 @@ export default function Tracks() {
     setCurrentTime(0)
   }
 
-  const handleSliderChange = (e) => {
-    const newTime = parseFloat(e.target.value)
+  const handleSeek = (newTime) => {
     if (audioRef.current) {
       audioRef.current.currentTime = newTime
     }
@@ -499,17 +499,15 @@ export default function Tracks() {
                 {isPlaying ? <CirclePause size={24} /> : <CirclePlay size={24} />}
               </button>
             </div>
-            <input
-              type="range"
-              min="0"
-              max={duration || 0}
-              value={currentTime}
-              onChange={handleSliderChange}
-              className="w-full appearance-none bg-indigo-200 h-2 rounded-full outline-none"
-              style={{
-                background: `linear-gradient(to right, #6366F1 0%, #6366F1 ${(currentTime / duration) * 100}%, #E0E7FF ${(currentTime / duration) * 100}%, #E0E7FF 100%)`
-              }}
-            />
+
+            <div className="flex justify-center items-center">
+              <CircularSlider
+                currentTime={currentTime}
+                duration={duration}
+                onSeek={handleSeek}
+              />
+            </div>
+
             <div className="flex justify-between text-sm text-indigo-600 mt-2">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
