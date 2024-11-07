@@ -22,6 +22,29 @@ const trackSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  playCount: {
+    type: Number,
+    default: 0,
+  },
+  likeCount: {
+    type: Number,
+    default: 0,
+  },
+  shareCount: {
+    type: Number,
+    default: 0,
+  },
+  comments: [{
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    text: String,
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  }],
 }, { timestamps: true });
 
 const Track = mongoose.model('Track', trackSchema);

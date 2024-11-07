@@ -93,3 +93,84 @@ export const deleteTrack = async (req, res) => {
     res.status(500).json({ message: 'Error deleting track', error: error.message });
   }
 };
+
+export const incrementPlayCount = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const track = await Track.findByIdAndUpdate(id, { $inc: { playCount: 1 } }, { new: true });
+    if (!track) {
+      return next(errorHandler(404, 'Track not found'));
+    }
+    res.status(200).json(track);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const likeTrack = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const track = await Track.findByIdAndUpdate(id, { $inc: { likeCount: 1 } }, { new: true });
+    if (!track) {
+      return next(errorHandler(404, 'Track not found'));
+    }
+    res.status(200).json(track);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const shareTrack = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const track = await Track.findByIdAndUpdate(id, { $inc: { shareCount: 1 } }, { new: true });
+    if (!track) {
+      return next(errorHandler(404, 'Track not found'));
+    }
+    res.status(200).json(track);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const addComment = async (req, res, next) => {
+  const { id } = req.params;
+  const { text } = req.body;
+
+  if (!text) {
+    return next(errorHandler(400, 'Comment text is required'));
+  }
+
+  try {
+    const track = await Track.findByIdAndUpdate(
+      id,
+      { $push: { comments: { user: req.user.id, text } } },
+      { new: true }
+    ).populate('comments.user', 'username');
+
+    if (!track) {
+      return next(errorHandler(404, 'Track not found'));
+    }
+
+    res.status(200).json(track.comments);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getComments = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const track = await Track.findById(id).populate('comments.user', 'username');
+    if (!track) {
+      return next(errorHandler(404, 'Track not found'));
+    }
+    res.status(200).json(track.comments);
+  } catch (error) {
+    next(error);
+  }
+};
