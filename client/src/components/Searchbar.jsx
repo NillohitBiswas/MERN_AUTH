@@ -14,6 +14,8 @@ export function SearchBar({ onSearch }) {
       <div className="relative">
         <input
           type="text"
+          id="search-input" // Added id attribute
+          name="search" // Added name attribute
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search tracks..."

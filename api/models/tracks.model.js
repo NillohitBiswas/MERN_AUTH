@@ -1,5 +1,26 @@
 import mongoose from "mongoose";
 
+const commentSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  username: {
+    type: String,
+    required: true
+  },
+  text: {
+    type: String,
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+
 const trackSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -26,25 +47,20 @@ const trackSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  likeCount: {
-    type: Number,
-    default: 0,
+  likes: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
   },
+  dislikes: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
+  },
+
   shareCount: {
     type: Number,
     default: 0,
   },
-  comments: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-    text: String,
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  }],
+  comments: [commentSchema],
 }, { timestamps: true });
 
 const Track = mongoose.model('Track', trackSchema);

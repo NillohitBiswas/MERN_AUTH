@@ -1,5 +1,6 @@
 'use client'
 
+
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { ref, getStorage, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage"
@@ -21,6 +22,11 @@ import {
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { SearchBar } from '../components/Searchbar.jsx'
 import CircularSlider from '../components/CircularSlider.jsx'
+import { CommentSection } from '../components/CommentSection.jsx'
+import { ShareTrack } from '../components/ShareTrack.jsx'
+import { TrackStats } from '../components/TrackStats.jsx'
+
+import { incrementPlayCount } from '../Redux/trackAPI.js'
 
 
 export default function Tracks() {
@@ -260,6 +266,7 @@ export default function Tracks() {
       setCurrentTrack(track)
       setIsPlaying(true)
       setAudioReady(false)
+      dispatch(incrementPlayCount(track._id))
     }
   }
 
@@ -312,6 +319,7 @@ export default function Tracks() {
     setFilteredTracks(filtered)
   }
 
+
   const TrackList = ({ tracks, showDelete = false }) => (
     <div className="h-[200px] overflow-y-auto" id="trackListContainer">
     <InfiniteScroll
@@ -336,6 +344,7 @@ export default function Tracks() {
           <div className="flex items-center">
             <FileMusic className="text-indigo-500 mr-3" size={24} />
             <span className="font-medium">{track.title} - <span className="text-gray-600">{track.artist}</span></span>
+            
           </div>
           <div className="flex space-x-2">
             <button
@@ -348,6 +357,7 @@ export default function Tracks() {
                 <CirclePlay size={20} />
               )}
             </button>
+            
             {showDelete && (
               <button
                 onClick={() => handleDelete(track._id, track.filePath)}
@@ -363,7 +373,12 @@ export default function Tracks() {
      </ul>
      </InfiniteScroll>
      </div>
-  )
+   )
+
+   const safeCurrentTime = isNaN(currentTime) ? 0 : currentTime
+   const safeDuration = isNaN(duration) || duration === 0 ? 1 : duration
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -501,17 +516,26 @@ export default function Tracks() {
             </div>
 
             <div className="flex justify-center items-center">
-              <CircularSlider
-                currentTime={currentTime}
-                duration={duration}
-                onSeek={handleSeek}
-              />
+            
+            <CircularSlider
+             currentTime={safeCurrentTime}
+             duration={safeDuration}
+             onSeek={handleSeek}
+            />
             </div>
 
             <div className="flex justify-between text-sm text-indigo-600 mt-2">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
             </div>
+
+            <div className="mt-4 flex justify-between items-center">
+                <TrackStats track={currentTrack}  />
+                <ShareTrack track={currentTrack} />
+              </div>
+
+            <CommentSection trackId={currentTrack._id} />
+
             <audio
               ref={audioRef}
               onTimeUpdate={handleTimeUpdate}

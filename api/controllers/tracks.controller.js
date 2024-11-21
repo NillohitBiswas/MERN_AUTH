@@ -110,15 +110,91 @@ export const incrementPlayCount = async (req, res, next) => {
 
 export const likeTrack = async (req, res, next) => {
   const { id } = req.params;
+  const userId = req.user.id;
 
   try {
-    const track = await Track.findByIdAndUpdate(id, { $inc: { likeCount: 1 } }, { new: true });
+    const track = await Track.findById(id);
     if (!track) {
-      return next(errorHandler(404, 'Track not found'));
+      return res.status(404).json({ message: 'Track not found' });
     }
-    res.status(200).json(track);
+
+    // Ensure likes and dislikes are arrays
+    track.likes = Array.isArray(track.likes) ? track.likes : [];
+    track.dislikes = Array.isArray(track.dislikes) ? track.dislikes : [];
+
+    const userLikedIndex = track.likes.findIndex(id => id.toString() === userId);
+    const userDislikedIndex = track.dislikes.findIndex(id => id.toString() === userId);
+
+    if (userLikedIndex > -1) {
+      // User already liked, so remove the like
+      track.likes.splice(userLikedIndex, 1);
+    } else {
+      // Add like and remove dislike if exists
+      track.likes.push(userId);
+      if (userDislikedIndex > -1) {
+        track.dislikes.splice(userDislikedIndex, 1);
+      }
+    }
+
+    await track.save();
+
+    res.status(200).json({
+      trackId: track._id,
+      likes: track.likes,
+      dislikes: track.dislikes,
+      liked: userLikedIndex === -1
+    });
   } catch (error) {
-    next(error);
+    console.error('Error in likeTrack:', error);
+    res.status(500).json({ 
+      message: 'Server error while liking track',
+      error: error.message 
+    });
+  }
+};
+
+export const dislikeTrack = async (req, res, next) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const track = await Track.findById(id);
+    if (!track) {
+      return res.status(404).json({ message: 'Track not found' });
+    }
+
+    // Ensure likes and dislikes are arrays
+    track.likes = Array.isArray(track.likes) ? track.likes : [];
+    track.dislikes = Array.isArray(track.dislikes) ? track.dislikes : [];
+
+    const userLikedIndex = track.likes.findIndex(id => id.toString() === userId);
+    const userDislikedIndex = track.dislikes.findIndex(id => id.toString() === userId);
+
+    if (userDislikedIndex > -1) {
+      // User already disliked, so remove the dislike
+      track.dislikes.splice(userDislikedIndex, 1);
+    } else {
+      // Add dislike and remove like if exists
+      track.dislikes.push(userId);
+      if (userLikedIndex > -1) {
+        track.likes.splice(userLikedIndex, 1);
+      }
+    }
+
+    await track.save();
+
+    res.status(200).json({
+      trackId: track._id,
+      likes: track.likes,
+      dislikes: track.dislikes,
+      disliked: userDislikedIndex === -1
+    });
+  } catch (error) {
+    console.error('Error in dislikeTrack:', error);
+    res.status(500).json({ 
+      message: 'Server error while disliking track',
+      error: error.message 
+    });
   }
 };
 
@@ -145,17 +221,29 @@ export const addComment = async (req, res, next) => {
   }
 
   try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return next(errorHandler(404, 'User not found'));
+    }
+
+    const newComment = {
+      user: req.user.id,
+      username: user.username,
+      text: text,
+      createdAt: new Date()
+    };
+
     const track = await Track.findByIdAndUpdate(
       id,
-      { $push: { comments: { user: req.user.id, text } } },
+      { $push: { comments: newComment } },
       { new: true }
-    ).populate('comments.user', 'username');
+    );
 
     if (!track) {
       return next(errorHandler(404, 'Track not found'));
     }
 
-    res.status(200).json(track.comments);
+    res.status(201).json(newComment);
   } catch (error) {
     next(error);
   }
@@ -169,7 +257,14 @@ export const getComments = async (req, res, next) => {
     if (!track) {
       return next(errorHandler(404, 'Track not found'));
     }
-    res.status(200).json(track.comments);
+    const formattedComments = track.comments.map(comment => ({
+      _id: comment._id,
+      user: comment.user._id,
+      username: comment.username || comment.user.username,
+      text: comment.text,
+      createdAt: comment.createdAt
+    }));
+    res.status(200).json(formattedComments);
   } catch (error) {
     next(error);
   }

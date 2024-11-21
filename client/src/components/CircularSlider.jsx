@@ -10,7 +10,7 @@ import React, { useRef, useEffect, useState } from 'react'
   const radius = 45
   const strokeWidth = 4
 
-  const normalizedCurrent = currentTime / duration
+  const normalizedCurrent = duration > 0 ? currentTime / duration : 0
   const circumference = 2 * Math.PI * radius
   // Calculate the stroke dash array
   const dashArray = `${(normalizedCurrent * circumference)} ${circumference}`;
