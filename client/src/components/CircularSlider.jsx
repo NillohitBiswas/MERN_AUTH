@@ -88,7 +88,7 @@ import React, { useRef, useEffect, useState } from 'react'
         cy={center}
         r={radius}
         fill="none"
-        stroke="#e0e0e0"
+        stroke="#a0af81"
         strokeWidth={strokeWidth}
       />
       <path
@@ -96,7 +96,7 @@ import React, { useRef, useEffect, useState } from 'react'
           normalizedCurrent > 0.5 ? 1 : 0
         } 1 ${endPoint.x},${endPoint.y}`}
         fill="none"
-        stroke="#4f46e5"
+        stroke="#9ee409"
         strokeWidth={strokeWidth}
         strokeDasharray={dashArray}
       />
@@ -104,7 +104,7 @@ import React, { useRef, useEffect, useState } from 'react'
         cx={endPoint.x}
         cy={endPoint.y}
         r={6}
-        fill="#4f46e5"
+        fill="#9ee409"
       />
     </svg>
   )

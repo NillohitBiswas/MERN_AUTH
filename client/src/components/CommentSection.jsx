@@ -36,7 +36,7 @@ export function CommentSection({ trackId }) {
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold mb-4">Comments</h3>
+      <h3 className="text-lg  text-lime-600 font-semibold mb-4">Comments</h3>
       {currentUser ? (
         <form onSubmit={handleSubmitComment} className="mb-4 flex">
           <input
@@ -46,11 +46,11 @@ export function CommentSection({ trackId }) {
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Add a comment..."
-            className="flex-grow p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-grow p-2 border border-gray-200 rounded-l-md focus:outline-none focus:ring-2 focus:ring-lime-400"
           />
           <button
             type="submit"
-            className="px-4 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 focus:outline-none"
+            className="px-4 bg-lime-400 text-black rounded-r-md hover:bg-lime-600 focus:outline-none"
           >
             Post
           </button>
@@ -65,7 +65,7 @@ export function CommentSection({ trackId }) {
             <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
               <User className="w-6 h-6 text-gray-500" />
             </div>
-            <div>
+            <div className="text-white">
               <p className="font-semibold">{comment.username || 'Anonymous'}</p>
               <p className="text-sm text-muted-foreground">
                 {comment.createdAt ? new Date(comment.createdAt).toLocaleString() : 'Unknown date'}

@@ -51,15 +51,19 @@ export function TrackStats({ track }) {
                      currentTrack.dislikes.includes(currentUser._id);
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-4 text-lime-600">
       <div className="flex items-center">
         <BarChart2 size={20} className="mr-1" />
         <span>{currentTrack.playCount || 0}</span>
       </div>
+      <div className="flex items-center space-x-1">
+        <Share2 size={20}  className="mr-1" />
+        <span>{currentTrack.shareCount || 0}</span>
+      </div>
       <button
         onClick={handleLike}
-        className={`flex items-center space-x-1 ${
-          isLiked ? 'text-blue-500' : 'text-black'
+        className={`flex items-center space-x-1  ${
+          isLiked ? 'text-blue-500' : 'text-lime-600'
         }`}
         aria-label={`Like ${currentTrack.title}`}
        >
@@ -69,17 +73,13 @@ export function TrackStats({ track }) {
       <button
         onClick={handleDislike}
         className={`flex items-center space-x-1 ${
-          isDisliked ? 'text-red-500' : 'text-black'
+          isDisliked ? 'text-red-500' : 'text-lime-600'
         }`}
         aria-label={`Dislike ${currentTrack.title}`}
        >
         <ThumbsDown size={20} />
         <span>{Array.isArray(currentTrack.dislikes) ? currentTrack.dislikes.length : 0}</span>
       </button>
-      <div className="flex items-center space-x-1">
-        <Share2 size={20}  className="mr-1" />
-        <span>{currentTrack.shareCount || 0}</span>
-      </div>
     </div>
   );
 }
