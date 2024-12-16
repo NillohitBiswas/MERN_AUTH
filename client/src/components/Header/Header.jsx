@@ -1,13 +1,14 @@
 import {Link} from 'react-router-dom'
 import './Header.css';
 import { useSelector } from 'react-redux';
+import logo from '../../assets/Audiqlogo.png';
 export default function Header() {
   const { currentUser } = useSelector( (state) => state.user)
   return (
     <div className="background">
       <div className='flex justify-between  items-center max-w-full mx-auto p-2 text-black'>
         <Link to='/'>   
-        <h1 className='font-authappfont font-bold text-3xl justify-items-start'>Auth App </h1>
+        <img src={logo} alt="Logo" className=" h-24  w-34 -mt-8 -mb-8" />
         </Link>
         <ul className='text-1xl flex gap-4 font-semibold font-mono items-center'>
          <Link to='/'>
@@ -22,7 +23,7 @@ export default function Header() {
         
          <Link to='/Profile'>
             {currentUser ? (
-              <img src={currentUser.profilePicture} alt='profile' className='h-8 w-8 rounded-full object-cover border-2 border-red-700 shadow-lg hover:shadow-red-300' />
+              <img src={currentUser.profilePicture} alt='profile' className='h-8 w-8 rounded-full object-cover border-2 border-lime-500 shadow-lg hover:shadow-lime-400' />
              ) :
               (
            

@@ -8,7 +8,7 @@ import React, { useRef, useEffect, useState } from 'react'
 
   const center = 50
   const radius = 45
-  const strokeWidth = 4
+  const strokeWidth = 6
 
   const normalizedCurrent = duration > 0 ? currentTime / duration : 0
   const circumference = 2 * Math.PI * radius

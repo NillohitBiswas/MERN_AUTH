@@ -22,7 +22,7 @@ export default function TrackList({ tracks, showDelete = false, playTrack, curre
   return (
     <div
       ref={listRef}
-      className="h-[350px] overflow-y-auto pr-4"
+      className="h-[350px] overflow-y-auto pr-4 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:bg-lime-600 [&::-webkit-scrollbar-thumb]:rounded-full [scrollbar-color:rgb(132,204,22)_rgb(31,41,55)] [scrollbar-width:thin]"
       onScroll={handleScroll}
     >
       <ul className="space-y-2">

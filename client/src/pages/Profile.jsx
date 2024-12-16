@@ -17,7 +17,8 @@ import {
   deleteUserFailure,
   logout,
 } from '../Redux/user/userSlice.js';
-import Particlescomp from '../components/Particles';
+import authimage from  '../assets/authimage.jpeg'
+import BackgroundLayout from '../components/Layout/BackgroundLayout';
 
 export default function Profile() {
   const dispatch = useDispatch();
@@ -111,13 +112,13 @@ export default function Profile() {
     }
   };
   return (
+    <BackgroundLayout image={authimage}>
     <div >
-       <Particlescomp id="particles"/>
-      <h1 className='font-mono font-bold text-3xl text-center my-6  max-w-lg mx-auto'>
+      <h1 className='font-mono font-bold text-3xl text-white text-center my-1  rounded-2xl border-2 border-slate-400 shadow-[4px_4px_15px_rgba(0,0,0,0.25)]  bg-black/25 backdrop-blur-lg py-5 max-w-lg mx-auto'>
         User Profile
       </h1>
       <form onSubmit={handleSubmit}
-       className="flex flex-col bg-white/30 backdrop-blur-xl rounded-[0px_40px_0px_40px] border-2 border-[#333332] shadow-[4px_4px_15px_rgba(0,0,0,0.25)] p-8 w-[350px] mx-auto my-8 text-center">
+       className="flex flex-col bg-white/40 backdrop-blur-lg rounded-[0px_40px_0px_40px] border-2 border-[#333332] shadow-[4px_4px_15px_rgba(0,0,0,0.25)] p-8 w-[350px] mx-auto my-8 text-center">
         <input 
         type='file' 
         ref={fileRef}
@@ -175,8 +176,8 @@ export default function Profile() {
              {loading ? 'Loading...' : 'Update Profile'}
            </button>
            <div className="flex justify-between"> 
-              <span onClick={handleDeleteAccount} className="font-mono text-sm font-semibold text-gray-500  hover:text-[#000000]  active:transition-[800ms] py-4 "> Delete Account</span>
-              <span onClick={handlelogout} className="font-mono text-sm font-semibold text-gray-500  hover:text-[#000000]  active:transition-[800ms] py-4 "> Logout</span>
+              <span onClick={handleDeleteAccount} className="font-mono cursor-pointer text-sm font-semibold text-gray-700  hover:text-black  active:transition-[800ms] py-4 "> Delete Account</span>
+              <span onClick={handlelogout} className="font-mono cursor-pointer text-sm font-semibold text-gray-700  hover:text-black  active:transition-[800ms] py-4 "> Logout</span>
            </div>
            <p className='text-red-700 mt-5'>{error && 'Something went wrong!'}</p>
            <p className='text-green-700 mt-5'>
@@ -186,5 +187,6 @@ export default function Profile() {
       </form>
       
     </div>
+    </BackgroundLayout>
   )
 }

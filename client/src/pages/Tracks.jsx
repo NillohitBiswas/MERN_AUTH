@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { ref, getStorage, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage"
 import { app } from '../Firebase.js'
-import { CirclePlay, CirclePause,  CloudUpload, User, Music } from 'lucide-react'
+import { CirclePlay, CirclePause,  CloudUpload, User, Music, SkipBack, SkipForward } from 'lucide-react'
 import {
   fetchTracksStart,
   fetchUserTracksSuccess,
@@ -25,10 +25,9 @@ import CircularSlider from '../components/CircularSlider.jsx'
 import { CommentSection } from '../components/CommentSection.jsx'
 import { ShareTrack } from '../components/ShareTrack.jsx'
 import { TrackStats } from '../components/TrackStats.jsx'
-
 import { incrementPlayCount } from '../Redux/trackAPI.js'
 
-
+import bgimage from '../assets/bgimage.png' 
 export default function Tracks() {
   const [activeTab, setActiveTab] = useState('all')
   const [file, setFile] = useState(null)
@@ -49,6 +48,8 @@ export default function Tracks() {
   const [hasMoreUserTracks, setHasMoreUserTracks] = useState(true);
 
   const [filteredTracks, setFilteredTracks] = useState([])
+  const [playlist, setPlaylist] = useState([])
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
 
   const dispatch = useDispatch()
   const { currentUser } = useSelector((state) => state.user)
@@ -259,10 +260,15 @@ export default function Tracks() {
 
   const playTrack = (track) => {
     if (currentTrack && currentTrack._id === track._id) {
-      // If it's the same track, just toggle play/pause
       togglePlayPause()
     } else {
-      // If it's a new track, update currentTrack
+      const newPlaylist = activeTab === 'all' ? allTracks : 
+                          activeTab === 'user' ? userTracks : 
+                          filteredTracks.length > 0 ? filteredTracks : [track]
+      
+      const trackIndex = newPlaylist.findIndex(t => t._id === track._id)
+      setPlaylist(newPlaylist)
+      setCurrentTrackIndex(trackIndex)
       setCurrentTrack(track)
       setIsPlaying(true)
       setAudioReady(false)
@@ -293,8 +299,31 @@ export default function Tracks() {
   }
 
   const handleTrackEnded = () => {
-    setIsPlaying(false)
-    setCurrentTime(0)
+    playNextTrack()
+  }
+
+  const playNextTrack = () => {
+    if (playlist.length > 0) {
+      const nextIndex = (currentTrackIndex + 1) % playlist.length
+      const nextTrack = playlist[nextIndex]
+      setCurrentTrackIndex(nextIndex)
+      setCurrentTrack(nextTrack)
+      setIsPlaying(true)
+      setAudioReady(false)
+      dispatch(incrementPlayCount(nextTrack._id))
+    }
+  }
+
+  const playPreviousTrack = () => {
+    if (playlist.length > 0) {
+      const previousIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length
+      const previousTrack = playlist[previousIndex]
+      setCurrentTrackIndex(previousIndex)
+      setCurrentTrack(previousTrack)
+      setIsPlaying(true)
+      setAudioReady(false)
+      dispatch(incrementPlayCount(previousTrack._id))
+    }
   }
 
   const handleSeek = (newTime) => {
@@ -320,27 +349,41 @@ export default function Tracks() {
   }
 
 
-   const safeCurrentTime = isNaN(currentTime) ? 0 : currentTime
-   const safeDuration = isNaN(duration) || duration === 0 ? 1 : duration
-
+  const safeCurrentTime = isNaN(currentTime) ? 0 : currentTime
+  const safeDuration = isNaN(duration) || duration === 0 ? 1 : duration
+  
+ 
 
 
   return (
-    <div className="min-h-screen bg-black py-8 px-4 sm:px-6 lg:px-8">
+  <div className="relative min-h-screen">
+    <div className="absolute inset-0 z-0">
+      <img
+        src={bgimage}
+        alt="Music Background"
+        layout="fill"
+        quality={100}
+        className="w-full h-full object-cover opacity-70"
+      />
+    </div>
+    <div className="relative z-10 min-h-screen py-4 px-4 sm:px-6 lg:px-8">
     <div className="max-w-6xl mx-auto">
-      <h1 className="text-5xl font-authappfont text- mb-8 text-center text-lime-500">Your Music Hub</h1>
-      
-      <SearchBar onSearch={handleSearch} />
+     <div className="flex flex-col rounded-2xl border-2 border-lime-400 bg-gradient-to-r from-lime-400 to-lime-300-200 md:flex-row justify-between items-center px-8 mt-7 mb-5">
 
+       <h1 className="text-9xl md:text-8xl font-authappfont mb-5 md:mb-0 text-left text-black">Audiq</h1>
+       <div className="w-full md:w-2/3 mt-5">
+        <SearchBar onSearch={handleSearch} />
+       </div>
+     </div>
       <div className="flex flex-col lg:flex-row gap-8 mt-8 h-auto">
         {/* Tracks List Card */}
-        <div className="w-full  lg:w-1/2 bg-gray-900 shadow-2xl rounded-3xl overflow-hidden border-4 border-lime-400">
+        <div className="w-full rounded-tl-[40px] rounded-br-[40px] rounded-tr-none rounded-bl-none lg:w-1/2 bg-gray-900/90 backdrop-blur-none shadow-2xl rounded-3xl overflow-hidden border-4 border-lime-400">
           <div className="flex border-b border-lime-400">
             {['all', 'user', 'upload'].map((tab) => (
               <button
                 key={tab}
                 className={`flex-1 py-3 px-4 text-center font-authappfont text-xl transition-colors duration-500 ${
-                  activeTab === tab ? 'bg-lime-600 text-black' : 'text-lime-500 hover:bg-gray-700'
+                  activeTab === tab ? 'bg-lime-400 text-black' : 'text-lime-300 hover:bg-gray-700'
                 }`}
                 onClick={() => setActiveTab(tab)}
               >
@@ -355,7 +398,7 @@ export default function Tracks() {
           <div className="p-4">
               {activeTab === 'all' && (
                 <div>
-                  <h2 className="text-2xl  font-authappfont font-light mb-4 text-lime-500">All Tracks</h2>
+                  <h2 className="text-2xl  font-authappfont font-light mb-4 text-lime-400">All Tracks</h2>
                   {filteredTracks.length > 0 ? (
                     <TracksList 
                       tracks={filteredTracks} 
@@ -382,7 +425,7 @@ export default function Tracks() {
 
               {activeTab === 'user' && (
                 <div>
-                  <h2 className="text-2xl font-authappfont font-light mb-4 text-lime-500">Your Tracks</h2>
+                  <h2 className="text-2xl font-authappfont font-light mb-4 text-lime-400">Your Tracks</h2>
                   {currentUser ? (
                     userTracks.length > 0 ? (
                       <TracksList 
@@ -399,7 +442,7 @@ export default function Tracks() {
                     <p className="text-lime-500">You haven't uploaded any tracks yet.</p>
                   )
                 ) : (
-                  <div className="bg-yellow-900 border-l-4 border-yellow-500 text-yellow-300 p-4 rounded-md" role="alert">
+                  <div className="bg-yellow-900/90 backdrop-blur-sm border-l-4 border-yellow-500 text-yellow-300 p-4 rounded-md" role="alert">
                     <p className="font-bold">Not logged in</p>
                     <p>Please log in to view and manage your tracks.</p>
                   </div>
@@ -409,7 +452,7 @@ export default function Tracks() {
 
             {activeTab === 'upload' && (
               <div>
-                <h2 className="text-2xl font-authappfont font-light mb-4 text-lime-500">Upload a Track</h2>
+                <h2 className="text-2xl font-authappfont font-light mb-4 text-lime-400">Upload a Track</h2>
                 {currentUser ? (
                   <div className="space-y-4">
                     <input
@@ -417,39 +460,39 @@ export default function Tracks() {
                       placeholder="Song Title"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      className="w-full px-3 py-2 placeholder-gray-500 bg-gray-800 border border-green-400 rounded-md focus:outline-none focus:ring focus:ring-green-300 focus:border-green-500 text-white transition-colors duration-300"
+                      className="w-full px-3 py-2 font-mono placeholder-gray-500 bg-gray-800/90 backdrop-blur-sm border border-lime-500 rounded-md focus:outline-none focus:ring focus:ring-lime-400 focus:border-lime-500 text-white transition-colors duration-300"
                     />
                     <input
                       type="text"
                       placeholder="Artist"
                       value={artist}
                       onChange={(e) => setArtist(e.target.value)}
-                      className="w-full px-3 py-2 placeholder-gray-500 bg-gray-800 border border-green-400 rounded-md focus:outline-none focus:ring focus:ring-green-300 focus:border-green-500 text-white transition-colors duration-300"
+                      className="w-full px-3 py-2 font-mono placeholder-gray-500 bg-gray-800/90 backdrop-blur-sm border border-lime-500 rounded-md focus:outline-none focus:ring focus:ring-lime-400 focus:border-lime-500 text-white transition-colors duration-300"
                     />
                     <input
                       type="file"
                       onChange={handleFileChange}
                       accept="audio/*"
-                      className="w-full px-3 py-2 text-green-400 bg-gray-800 border border-green-400 rounded-md focus:outline-none focus:ring focus:ring-green-300 focus:border-green-500 transition-colors duration-300"
+                      className="w-full px-3 py-2 font-mono text-lime-500 bg-gray-800/90 backdrop-blur-sm border border-lime-500 rounded-md focus:outline-none focus:ring focus:ring-lime-400 focus:border-lime-600 transition-colors duration-300"
                     />
                     <button
                       onClick={handleUpload}
                       disabled={loading || (uploadProgress > 0 && uploadProgress < 100)}
-                      className="w-full bg-green-400 text-black py-2 px-4 rounded-md hover:bg-green-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-300"
+                      className="w-full bg-lime-500 font-authappfont text-lg text-black py-2 px-4 rounded-md hover:bg-lime-300 focus:outline-none focus:ring-2 focus:ring-lime-600 focus:ring-opacity-50 disabled:opacity-50 transition-colors duration-300"
                     >
                       {loading ? 'Uploading...' : 'Upload Song'}
                     </button>
                     {uploadProgress > 0 && uploadProgress < 100 && (
                       <div className="w-full bg-gray-700 rounded-full h-2.5 overflow-hidden">
                         <div 
-                          className="bg-green-400 h-2.5 transition-all duration-300 ease-in-out"
+                          className="bg-lime-400 h-2.5 transition-all duration-300 ease-in-out"
                           style={{ width: `${uploadProgress}%` }}
                         />
                       </div>
                     )}
                     {uploadMessage && (
                       <div
-                        className={`mt-4 p-4 rounded-md ${uploadMessage.includes('Error') ? 'bg-red-900 text-red-300' : 'bg-green-900 text-green-300'} transition-opacity duration-300`}
+                        className={`mt-4 p-4 rounded-md ${uploadMessage.includes('Error') ? 'bg-red-900/90 backdrop-blur-sm text-red-300' : 'bg-lime-700/90 backdrop-blur-sm text-lime-400'} transition-opacity duration-300`}
                         role="alert"
                       >
                         <p>{uploadMessage}</p>
@@ -457,7 +500,7 @@ export default function Tracks() {
                     )}
                   </div>
                 ) : (
-                  <div className="bg-yellow-900 border-l-4 border-yellow-500 text-yellow-300 p-4 rounded-md" role="alert">
+                  <div className="bg-yellow-900/90 backdrop-blur-sm border-l-4 border-yellow-500 text-yellow-300 p-4 rounded-md" role="alert">
                     <p className="font-bold">Not logged in</p>
                     <p>Please log in to upload tracks.</p>
                   </div>
@@ -468,15 +511,17 @@ export default function Tracks() {
         </div>
 
         {/* Player Section Card */}
-        <div className="w-full lg:w-1/2 bg-gray-900 shadow-2xl rounded-3xl overflow-hidden border-4 border-lime-400 p-6">
+        <div className="w-full rounded-tl-none rounded-br-none rounded-tr-[40px] rounded-bl-[40px] lg:w-1/2 bg-gray-900/90 backdrop-blur-none shadow-2xl rounded-3xl overflow-hidden border-4 border-lime-400 p-6">
           {currentTrack ? (
             <>
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-1">
                 <div>
-                  <h3 className="text-xl font-semibold text-lime-500">{currentTrack.title}</h3>
-                  <p className="text-sm text-lime-400">{currentTrack.artist}</p>
+                  <h3 className="text-2xl font-authappfont font-extralight text-lime-300">{currentTrack.title}</h3>
+                  <p className="text-sm text-white">{currentTrack.artist}</p>
                 </div>
-                <div className="pr-6 pt-6">
+
+               
+                <div className="pr-8 pt-10">
                 <CircularSlider
                   currentTime={safeCurrentTime}
                   duration={safeDuration}
@@ -485,17 +530,31 @@ export default function Tracks() {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center mb-6">
-                <button
-                  onClick={togglePlayPause}
-                  className="p-3 rounded-full bg-lime-400 text-black hover:bg-lime-500 focus:outline-none focus:ring-2 focus:ring-lime-600 focus:ring-opacity-50 transition-colors duration-300"
-                  aria-label={isPlaying ? "Pause" : "Play"}
-                >
-                  {isPlaying ? <CirclePause size={24} /> : <CirclePlay size={24} />}
-                </button>
-              </div>
+              <div className="flex space-x-2 items-center mb-6">
+              <button
+                onClick={playPreviousTrack}
+                className="p-3 rounded-full bg-lime-500 text-black hover:bg-lime-300 focus:outline-none focus:ring-2 focus:ring-lime-600 focus:ring-opacity-50 transition-colors duration-300"
+                aria-label="Previous Track"
+              >
+                <SkipBack size={15} />
+              </button>
+              <button
+                onClick={togglePlayPause}
+                className="p-3 rounded-full bg-lime-400 text-black hover:bg-lime-300 focus:outline-none focus:ring-2 focus:ring-lime-600 focus:ring-opacity-50 transition-colors duration-300"
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                {isPlaying ? <CirclePause size={24} /> : <CirclePlay size={24} />}
+              </button>
+              <button
+                onClick={playNextTrack}
+                className="p-3  rounded-full bg-lime-500 text-black hover:bg-lime-400 focus:outline-none focus:ring-2 focus:ring-lime-600 focus:ring-opacity-50 transition-colors duration-300"
+                aria-label="Next Track"
+              >
+                <SkipForward size={15} />
+              </button>
+            </div>
 
-              <div className="flex justify-between text-sm text-lime-400 mb-6">
+              <div className="flex justify-start space-x-24 text-sm text-lime-400 mb-6">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
@@ -517,12 +576,13 @@ export default function Tracks() {
             </>
           ) : (
             <div className="flex items-center justify-center h-full">
-              <p className="text-lime-400 text-lg">Select a track to play</p>
+              <p className="text-lime-400 font-mono text-lg">Select a track to play</p>
             </div>
           )}
         </div>
       </div>
     </div>
   </div>
+</div>
 )
 }
