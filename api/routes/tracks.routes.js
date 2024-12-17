@@ -10,7 +10,8 @@ import {
       dislikeTrack,
       shareTrack,
       addComment,
-      getComments } from '../controllers/tracks.controller.js';
+      getComments,
+      deleteComment } from '../controllers/tracks.controller.js';
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.post('/:id/dislike', verifyToken, dislikeTrack);
 router.post('/:id/share', shareTrack);
 router.post('/:id/comment', verifyToken, addComment);
 router.get('/:id/comments', getComments);
+router.delete('/:id/comments/:commentId', verifyToken, deleteComment);
 
 
 export default router;

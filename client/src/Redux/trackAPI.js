@@ -1,11 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { updateTrackStats, addCommentSuccess, fetchCommentsSuccess,
-  likeTrackStart,
-  likeTrackSuccess,
-  likeTrackFailure,
-  dislikeTrackStart,
-  dislikeTrackSuccess,
-  dislikeTrackFailure,
+import {
+   updateTrackStats,
+   addCommentSuccess, 
+   fetchCommentsSuccess,
+   deleteCommentSuccess,
+   likeTrackStart,
+   likeTrackSuccess,
+   likeTrackFailure,
+   dislikeTrackStart,
+   dislikeTrackSuccess,
+   dislikeTrackFailure,
  } from "./user/tracksSlice";
 
 export const incrementPlayCount = createAsyncThunk(
@@ -164,6 +168,30 @@ export const getComments = createAsyncThunk(
       return data;
     } catch (error) {
       console.error('Error fetching comments:', error);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+export const deleteComment = createAsyncThunk(
+  'tracks/deleteComment',
+  async ({ trackId, commentId }, thunkAPI) => {
+    try {
+      const response = await fetch(`/api/tracks/${trackId}/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete comment');
+      }
+
+      thunkAPI.dispatch(deleteCommentSuccess({ trackId, commentId }));
+      return { trackId, commentId };
+    } catch (error) {
+      console.error('Error deleting comment:', error);
       return thunkAPI.rejectWithValue(error.message);
     }
   }

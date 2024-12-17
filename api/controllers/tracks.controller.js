@@ -269,3 +269,32 @@ export const getComments = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteComment = async (req, res, next) => {
+  const { id: trackId, commentId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const track = await Track.findById(trackId);
+    if (!track) {
+      return res.status(404).json({ message: 'Track not found' });
+    }
+
+    const comment = track.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    if (comment.user.toString() !== userId && track.uploadedBy.toString() !== userId) {
+      return res.status(403).json({ message: 'You do not have permission to delete this comment' });
+    }
+
+    track.comments.pull(commentId);
+    await track.save();
+
+    res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ message: 'Error deleting comment', error: error.message });
+  }
+};

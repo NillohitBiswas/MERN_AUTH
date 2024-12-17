@@ -63,7 +63,9 @@ const trackSlice = createSlice({
         }
         return track;
       };
-      state.userTracks = state.userTracks.map(updateTrack);
+      state.userTracks = Array.isArray(state.userTracks) 
+        ? state.userTracks.map(updateTrack)
+        : [];
       state.allTracks = state.allTracks.map(updateTrack);
     },
 
@@ -79,8 +81,10 @@ const trackSlice = createSlice({
         }
         return track;
       };
-      state.userTracks = state.userTracks.map(updateTrack);
-      state.allTracks = state.allTracks.map(updateTrack);
+      state.userTracks = Array.isArray(state.userTracks) 
+      ? state.userTracks.map(updateTrack)
+      : [];
+     state.allTracks = state.allTracks.map(updateTrack);
       state.loading = false;
     },
     likeTrackFailure: (state, action) => {
@@ -99,8 +103,10 @@ const trackSlice = createSlice({
         }
         return track;
       };
-      state.userTracks = state.userTracks.map(updateTrack);
-      state.allTracks = state.allTracks.map(updateTrack);
+      state.userTracks = Array.isArray(state.userTracks) 
+      ? state.userTracks.map(updateTrack)
+      : [];
+     state.allTracks = state.allTracks.map(updateTrack);
       state.loading = false;
     },
     dislikeTrackFailure: (state, action) => {
@@ -125,8 +131,10 @@ const trackSlice = createSlice({
         }
         return track;
       };
-      state.userTracks = state.userTracks.map(updateTrack);
-      state.allTracks = state.allTracks.map(updateTrack);
+      state.userTracks = Array.isArray(state.userTracks) 
+      ? state.userTracks.map(updateTrack)
+      : [];
+    state.allTracks = state.allTracks.map(updateTrack);
     },
     fetchCommentsSuccess: (state, action) => {
       const { trackId, comments } = action.payload;
@@ -145,8 +153,26 @@ const trackSlice = createSlice({
         }
         return track;
       };
-      state.userTracks = state.userTracks.map(updateTrack);
-      state.allTracks = state.allTracks.map(updateTrack);
+      state.userTracks = Array.isArray(state.userTracks) 
+      ? state.userTracks.map(updateTrack)
+      : [];
+    state.allTracks = state.allTracks.map(updateTrack);
+    },
+    deleteCommentSuccess: (state, action) => {
+      const { trackId, commentId } = action.payload;
+      const updateTrack = (track) => {
+        if (track._id === trackId) {
+          return {
+            ...track,
+            comments: track.comments.filter(comment => comment._id !== commentId)
+          };
+        }
+        return track;
+      };
+      state.userTracks = Array.isArray(state.userTracks) 
+      ? state.userTracks.map(updateTrack)
+      : [];
+    state.allTracks = state.allTracks.map(updateTrack);
     },
   },
 });
@@ -165,6 +191,7 @@ export const {
   updateTrackStats,
   addCommentSuccess,
   fetchCommentsSuccess,
+  deleteCommentSuccess,
   likeTrackStart,
   likeTrackSuccess,
   likeTrackFailure,
