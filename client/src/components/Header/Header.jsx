@@ -10,7 +10,7 @@ export default function Header() {
         <Link to='/'>   
         <img src={logo} alt="Logo" className=" h-24  w-34 -mt-8 -mb-8" />
         </Link>
-        <ul className='text-1xl flex gap-4 font-semibold font-mono items-center'>
+        <ul className='text-1xl mr-5 flex gap-4 font-semibold font-mono items-center'>
          <Link to='/'>
          <li>Home</li>
          </Link>
@@ -23,7 +23,7 @@ export default function Header() {
         
          <Link to='/Profile'>
             {currentUser ? (
-              <img src={currentUser.profilePicture} alt='profile' className='h-8 w-8 rounded-full object-cover border-2 border-lime-500 shadow-lg hover:shadow-lime-400' />
+              <img src={currentUser.profilePicture} alt='profile' className=' h-8 w-8 rounded-full object-cover border-2 border-lime-500 shadow-lg hover:shadow-lime-400' />
              ) :
               (
            

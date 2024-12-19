@@ -1,8 +1,9 @@
 import {Link, useNavigate} from 'react-router-dom';
-import Particlescomp from '../../components/Particles';
 import './SignUp.css';
 import { useState } from 'react';
 import OAuth from '../../components/OAuth';
+import authimage from  '../../assets/authimage.jpeg'
+import BackgroundLayout from '../../components/Layout/BackgroundLayout';
 function SignUp() {
   const [ formData, setFormData ] = useState({})
   const [error, setError] = useState(false)
@@ -65,10 +66,10 @@ function SignUp() {
    }
   }
   return (
+    <BackgroundLayout image={authimage}>
     <div>
-      <Particlescomp id="particles"/>
       <div className='p-4 max-w-lg mx-auto'>
-        <h1 className='font-mono font-bold text-3xl text-center my-7'>Create Your Account</h1>
+        <h1 className='font-mono font-bold text-3xl text-white text-center my-5  rounded-2xl border-2 border-slate-400 shadow-[4px_4px_15px_rgba(0,0,0,0.25)]  bg-black/25 backdrop-blur-lg py-5'>Create Your Account</h1>
         <div className="signup-container">
          <div className="signup-header">
            <span>Hello, Friend!</span>
@@ -86,7 +87,7 @@ function SignUp() {
              onChange={handleChange} 
              autoComplete='given-name'
            />
-           <label htmlFor="username" className="absolute left-2 -top-4 text-gray-800 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Username</label>
+           <label htmlFor="username" className="absolute left-2 -top-4 text-gray-800 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-900 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Username</label>
           </div>
           <div className="mt-4 relative">
            <input
@@ -98,7 +99,7 @@ function SignUp() {
              onChange={handleChange}
              autoComplete='off'
            />
-           <label htmlFor="email" className="absolute left-2 -top-4 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
+           <label htmlFor="email" className="absolute left-2 -top-4 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-900 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
           </div>
           <div className="mt-4 relative">
            <input
@@ -110,7 +111,7 @@ function SignUp() {
              onChange={handleChange}
              autoComplete='off'
            />
-           <label htmlFor="password" className="absolute left-2 -top-4 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
+           <label htmlFor="password" className="absolute left-2 -top-4 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-900 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
           </div>
 
            <button disabled={loading} type="submit">
@@ -139,6 +140,7 @@ function SignUp() {
         </div>
       </div>
     </div>
+    </BackgroundLayout>
   )
 }
 export default SignUp;

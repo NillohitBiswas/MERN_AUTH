@@ -75,8 +75,8 @@ import React, { useRef, useEffect, useState } from 'react'
   return (
     <svg
       ref={svgRef}
-      width="100"
-      height="100"
+      width="110"
+      height="110"
       viewBox="0 0 100 100"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -103,7 +103,7 @@ import React, { useRef, useEffect, useState } from 'react'
       <circle
         cx={endPoint.x}
         cy={endPoint.y}
-        r={6}
+        r={8}
         fill="#9ee409"
       />
     </svg>

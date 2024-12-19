@@ -6,7 +6,7 @@ export default function Hero() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4  ">
-      <div className="px-2 mb-3 rounded-2xl border-2 border-slate-400 shadow-[4px_4px_15px_rgba(0,0,0,0.25)]  bg-white/15 backdrop-blur-lg  ">
+      <div className="px-2 mb-3 rounded-2xl border-2 border-slate-400 shadow-[4px_4px_15px_rgba(0,0,0,0.25)]  bg-white/25 backdrop-blur-lg  ">
          <h1 className="text-8xl font-authappfont text-black font-thin -mb-1 mt-8 ">
             Welcome to Audiq
          </h1>

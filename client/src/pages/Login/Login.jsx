@@ -1,10 +1,11 @@
 import {Link, useNavigate} from 'react-router-dom';
-import Particlescomp from '../../components/Particles';
 import './Login.css';
 import { useState } from 'react';
 import { loginStart,loginSuccess,loginFailure } from '../../Redux/user/userSlice';
 import {useDispatch, useSelector } from 'react-redux';
 import OAuth  from '../../components/OAuth';
+import authimage from  '../../assets/authimage.jpeg'
+import BackgroundLayout from '../../components/Layout/BackgroundLayout';
 function Login() {
   const [ formData, setFormData ] = useState({})
   const  {loading, error} = useSelector((state) => state.user);
@@ -38,10 +39,10 @@ function Login() {
    }
   }
   return (
+    <BackgroundLayout image={authimage}>
     <div>
-      <Particlescomp id="particles"/>
       <div className='p-4 max-w-lg mx-auto'>
-        <h1 className='font-mono font-bold text-3xl text-center my-7'>Get Started!</h1>
+        <h1 className='font-mono font-bold text-3xl text-center text-white my-5  rounded-2xl border-2 border-slate-400 shadow-[4px_4px_15px_rgba(0,0,0,0.25)]  bg-black/25 backdrop-blur-lg py-5'>Get Started!</h1>
         <div className="login-container">
          <div className="login-header">
            <span>How you doing!</span>
@@ -54,12 +55,12 @@ function Login() {
              type="email"
              name="email"
              id="email"
-             className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-rose-600 p-3 rounded-lg"
+             className="peer h-10 w-full border-b-2 border-gray-300 text-black placeholder-transparent focus:outline-none focus:border-rose-600 p-3 rounded-lg"
              placeholder="john@doe.com" 
              onChange={handleChange}
              autoComplete='off'
            />
-           <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
+           <label htmlFor="email" className="absolute left-0 -top-3.5 text-black text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-900 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
           </div>
           <div className="mt-4 relative">
            <input
@@ -71,7 +72,7 @@ function Login() {
              onChange={handleChange}
              autoComplete='off'
            />
-           <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
+           <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-900 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Password</label>
           </div>
 
            <button disabled={loading} >
@@ -96,6 +97,7 @@ function Login() {
         </div>
       </div>
     </div>
+    </BackgroundLayout>
   )
 }
 export default Login;

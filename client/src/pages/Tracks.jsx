@@ -28,6 +28,8 @@ import { TrackStats } from '../components/TrackStats.jsx'
 import { incrementPlayCount } from '../Redux/trackAPI.js'
 
 import bgimage from '../assets/bgimage.png' 
+import PlayerSection from '../assets/PlayerSection.jpg'
+import Player from '../assets/Player.jpg'
 export default function Tracks() {
   const [activeTab, setActiveTab] = useState('all')
   const [file, setFile] = useState(null)
@@ -368,14 +370,14 @@ export default function Tracks() {
     </div>
     <div className="relative z-10 min-h-screen py-4 px-4 sm:px-6 lg:px-8">
     <div className="max-w-6xl mx-auto">
-     <div className="flex flex-col rounded-2xl border-2 border-lime-400 bg-gradient-to-r from-lime-400 to-lime-300-200 md:flex-row justify-between items-center px-8 mt-7 mb-5">
+     <div className="flex flex-col rounded-2xl border-2 border-lime-400 bg-gradient-to-r from-lime-400 to-lime-300-200 md:flex-row justify-between items-center px-8 mt-4 mb-1">
 
        <h1 className="text-9xl md:text-8xl font-authappfont mb-5 md:mb-0 text-left text-black">Audiq</h1>
        <div className="w-full md:w-2/3 mt-5">
         <SearchBar onSearch={handleSearch} />
        </div>
      </div>
-      <div className="flex flex-col lg:flex-row gap-8 mt-8 h-auto">
+      <div className="flex flex-col lg:flex-row gap-8 mt-7 h-auto">
         {/* Tracks List Card */}
         <div className="w-full rounded-tl-[40px] rounded-br-[40px] rounded-tr-none rounded-bl-none lg:w-1/2 bg-gray-900/90 backdrop-blur-none shadow-2xl rounded-3xl overflow-hidden border-4 border-lime-400">
           <div className="flex border-b border-lime-400">
@@ -512,15 +514,22 @@ export default function Tracks() {
 
         {/* Player Section Card */}
         <div className="w-full rounded-tl-none rounded-br-none rounded-tr-[40px] rounded-bl-[40px] lg:w-1/2 bg-gray-900/90 backdrop-blur-none shadow-2xl rounded-3xl overflow-hidden border-4 border-lime-400 p-6">
-          {currentTrack ? (
-            <>
-              <div className="flex justify-between items-center mb-1">
+        <div className="relative h-full">
+            {currentTrack ? (
+              <>
+                <div 
+                  className="absolute inset-0 bg-center bg-cover bg-no-repeat filter blur-sm rounded-tr-[40px] rounded-bl-[40px] overflow-hidden "
+                  style={{
+                    backgroundImage: `url(${ Player})`,
+                  }}
+                ></div>
+                <div className="absolute inset-0 bg-black bg-opacity-30 rounded-tr-[40px] rounded-bl-[40px] "></div>
+                <div className="relative z-10 px-7 py-1">
+              <div className="flex justify-between items-center -mb-4">
                 <div>
-                  <h3 className="text-2xl font-authappfont font-extralight text-lime-300">{currentTrack.title}</h3>
-                  <p className="text-sm text-white">{currentTrack.artist}</p>
+                  <h3 className="pl-7 text-2xl font-authappfont font-extralight text-lime-300">{currentTrack.title}</h3>
+                  <p className="pl-10 text-sm text-white">{currentTrack.artist}</p>
                 </div>
-
-               
                 <div className="pr-8 pt-10">
                 <CircularSlider
                   currentTime={safeCurrentTime}
@@ -573,12 +582,25 @@ export default function Tracks() {
                 onEnded={handleTrackEnded}
                 className="hidden"
               />
+              </div>
             </>
           ) : (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-lime-400 font-mono text-lg">Select a track to play</p>
-            </div>
+            <div className="relative h-full flex items-center justify-center rounded-tr-[40px] rounded-bl-[40px] overflow-hidden">
+            <img
+              src={PlayerSection}
+              alt="Select a track"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
+                  <p className="text-lime-400 font-mono text-lg inline-block px-4 py-2 bg-gray-900 bg-opacity-75 rounded-lg">
+                    Select a track to play
+                  </p>
+                </div>
+              </div>
+          </div>
           )}
+          </div>
         </div>
       </div>
     </div>
